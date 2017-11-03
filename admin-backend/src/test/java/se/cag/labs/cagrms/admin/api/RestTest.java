@@ -6,6 +6,8 @@ import io.restassured.matcher.RestAssuredMatchers.*;
 import io.restassured.response.Response;
 import org.junit.Ignore;
 import org.junit.Test;
+import se.cag.labs.cagrms.admin.api.User;
+
 
 
 import static io.restassured.RestAssured.given;
@@ -21,10 +23,14 @@ import static io.restassured.RestAssured.given;
         System.out.println("svaret är :" + response.statusCode());
     }
 
+    @Test public void TestaPingResponse(){
+        Response response = given().header("Accept" ,"*/*").when().get("http://localhost:10580/ping").then().statusCode(200).log().ifValidationFails().extract().response();
+        System.out.println("svaret är :" + response.statusCode());
+    }
+
     @Test
     public void TestLogin(){
         User user = new User();
-        User responseUser = new User();
         user.displayName = "testsson";
         user.password = "testa";
         user.userId = "testsson";
@@ -38,7 +44,8 @@ import static io.restassured.RestAssured.given;
                 then().
                 extract().response();
 
-        responseUser = response.as(User.class);
+
+        User responseUser = response.as(User.class);
 
         System.out.println("userid: " + responseUser.userId + ", displayName: " + responseUser.displayName + ", password: " + responseUser.password);
         System.out.println("token: " + response.header("x-authtoken"));
